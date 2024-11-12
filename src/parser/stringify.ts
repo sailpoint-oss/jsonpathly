@@ -13,8 +13,6 @@ const OPERATOR: Record<Comparator['operator'], string> = {
   subsetof: 'subsetof',
   anyof: 'anyof',
   noneof: 'noneof',
-  empty: 'empty',
-  sizeof: 'sizeof',
   size: 'size',
 };
 

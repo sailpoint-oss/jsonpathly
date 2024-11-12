@@ -436,34 +436,6 @@ describe('query', () => {
         expected: [],
       },
       {
-        path: `$[?(@.arrayOfNumber sizeof @.arrayOfNumber)]`,
-        expected: [PAYLOAD],
-      },
-      {
-        path: `$[?(@.arrayOfNumber sizeof 123)]`,
-        expected: [],
-      },
-      {
-        path: `$[?(@.arrayOfNumber empty)]`,
-        expected: [],
-      },
-      {
-        path: `$.arraySimpleObjects[?(@.arr empty)]`,
-        expected: [PAYLOAD.arraySimpleObjects[2]],
-      },
-      {
-        path: `$.arraySimpleObjects[?(@.str empty)]`,
-        expected: [PAYLOAD.arraySimpleObjects[1]],
-      },
-      {
-        path: `$[?(123 sizeof @.arrayOfNumber)]`,
-        expected: [],
-      },
-      {
-        path: `$[?([1,2,3,4,5,6,7,8,9,10] sizeof @.arrayOfNumber)]`,
-        expected: [],
-      },
-      {
         path: `$[?(@.arrayOfNumber size 9)]`,
         expected: [PAYLOAD],
       },
@@ -477,10 +449,6 @@ describe('query', () => {
       },
       {
         path: `$[?(@.arrayOfNumber size 8)]`,
-        expected: [],
-      },
-      {
-        path: `$[?(123 sizeof 9)]`,
         expected: [],
       },
       {

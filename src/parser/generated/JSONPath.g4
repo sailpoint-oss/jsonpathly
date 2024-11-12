@@ -23,9 +23,7 @@ NIN : ' nin ' ;
 SUB : ' subsetof ' ;
 ANY : ' anyof ' ;
 NON : ' noneof ' ;
-SIZO : ' sizeof ' ;
 SIZ : ' size ' ;
-EMPT : ' empty' ;
 NOT : '!' ;
 OR : '||' ;
 
@@ -182,9 +180,8 @@ expression
    : NOT PAREN_LEFT expression PAREN_RIGHT
    | PAREN_LEFT expression PAREN_RIGHT
    | expression ( AND | OR ) expression
-   | filterarg ( EQ | NE | LT | LE | GT | GE | IN | NIN | SUB | ANY | SIZO| NON | SIZ ) filterarg
+   | filterarg ( EQ | NE | LT | LE | GT | GE | IN | NIN | SUB | ANY | NON | SIZ ) filterarg
    | filterarg REG regex
-   | filterarg EMPT
    | filterpath
    | TRUE
    | FALSE

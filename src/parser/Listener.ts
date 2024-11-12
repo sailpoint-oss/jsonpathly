@@ -460,11 +460,6 @@ export default class Listener extends JSONPathListener {
         });
         break;
       }
-      case !!ctx.EMPT(): {
-        const left = this.popWithCheck('operationContent', ctx);
-        this.push({ type: 'comparator', operator: 'empty', left, right: null });
-        break;
-      }
       case !!ctx.getTypedRuleContext(JSONPathParser.FilterargContext, 1): {
         const right = this.popWithCheck('operationContent', ctx);
         const left = this.popWithCheck('operationContent', ctx);
@@ -516,10 +511,6 @@ export default class Listener extends JSONPathListener {
           }
           case !!ctx.SIZ(): {
             this.push({ type: 'comparator', operator: 'size', left, right });
-            break;
-          }
-          case !!ctx.SIZO(): {
-            this.push({ type: 'comparator', operator: 'sizeof', left, right });
             break;
           }
         }

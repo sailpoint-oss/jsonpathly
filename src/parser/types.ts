@@ -63,12 +63,10 @@ export type Comparator =
         | 'anyof'
         | 'noneof'
         | 'size'
-        | 'sizeof';
       left: OperationContent;
       right: OperationContent;
     }
-  | { type: 'comparator'; operator: 'reg'; left: OperationContent; right: ValueRegex }
-  | { type: 'comparator'; operator: 'empty'; left: OperationContent; right: null };
+  | { type: 'comparator'; operator: 'reg'; left: OperationContent; right: ValueRegex };
 
 export type DotContent = Identifier | NumericLiteral | Wildcard | PathFunction;
 

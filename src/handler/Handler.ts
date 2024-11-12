@@ -118,14 +118,6 @@ export class Handler<T extends unknown = unknown> {
 
   private handleComparator = (payload: ValuePath, tree: Comparator): boolean => {
     const leftValue = this.handleOperationContent(payload, tree.left)?.value;
-
-    if (tree.operator === 'empty') {
-      if (!isArray(leftValue) && !isString(leftValue)) {
-        return false;
-      }
-      return leftValue.length === 0;
-    }
-
     const rightValue = this.handleOperationContent(payload, tree.right)?.value;
 
     switch (tree.operator) {
@@ -149,12 +141,6 @@ export class Handler<T extends unknown = unknown> {
         }
         const itemsRight = new Set(rightValue);
         return !leftValue.some((e) => itemsRight.has(e));
-      }
-      case 'sizeof': {
-        if ((!isArray(leftValue) && !isString(leftValue)) || (!isArray(rightValue) && !isString(rightValue))) {
-          return false;
-        }
-        return leftValue.length === rightValue.length;
       }
       case 'size': {
         if ((!isArray(leftValue) && !isString(leftValue)) || !isNumber(rightValue)) {
