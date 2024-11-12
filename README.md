@@ -85,9 +85,7 @@ The following table lists different operators and their descriptions:
 | subsetof | left is a subset of the right (e.g. [?(@.sizes subsetof ['S', 'M', 'L'])])         |
 | anyof    | left has items in common with the right (e.g. [?(@.sizes anyof ['M', 'L'])])       |
 | noneof   | left has no items in common with the right (e.g. [?(@.sizes noneof ['M', 'L'])])   |
-| sizeof   | size of the left must match the size of the right (both must be arrays or strings) |
 | size     | size of the left must match the right (right must be a number)                     |
-| empty    | left (array or string) must be empty                                               |
 
 ## Methods
 
@@ -170,6 +168,12 @@ is valid, but
 #### Grammar
 
 The project uses ANTLR [grammar](https://github.com/atamano/jsonpathly/blob/master/src/parser/generated/JSONPath.g4) to parse JSONPath expressions and construct a typed abstract syntax tree (AST).
+
+To install ANTLR on MacOS using Homebrew, run `brew install antlr`.
+
+You will need Java installed on your machine as well. If you install Java using Homebrew, you made need to link it to the correct folder to be recognized by ANTLR.
+
+`sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk`
 
 #### Implementation
 
