@@ -1,4 +1,4 @@
-// Generated from ./src/parser/generated/JSONPath.g4 by ANTLR 4.13.1
+// Generated from ./src/parser/generated/JSONPath.g4 by ANTLR 4.13.2
 // jshint ignore: start
 import antlr4 from 'antlr4';
 
@@ -11,6 +11,15 @@ export default class JSONPathListener extends antlr4.tree.ParseTreeListener {
 
 	// Exit a parse tree produced by JSONPathParser#jsonpath.
 	exitJsonpath(ctx) {
+	}
+
+
+	// Enter a parse tree produced by JSONPathParser#function.
+	enterFunction(ctx) {
+	}
+
+	// Exit a parse tree produced by JSONPathParser#function.
+	exitFunction(ctx) {
 	}
 
 

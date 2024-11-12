@@ -10,6 +10,8 @@ import {
   LogicalExpression,
   NumericLiteral,
   OperationContent,
+  PathFunction,
+  PathFunctionContent,
   Root,
   Slices,
   StringLiteral,
@@ -52,6 +54,17 @@ export class Handler<T extends unknown = unknown> {
     }
 
     return Object.keys(value).map((key) => ({ value: value[key], paths: formatStringLiteralPath(paths, key) }));
+  };
+  
+  private handleFunction = (payload: ValuePath, tree: PathFunction): ValuePath | undefined => {
+    switch (tree.operator) {
+      case 'length': {
+        if (!isArray(payload.value)) {
+          return;
+        }
+        return { value: payload.value.length, paths: payload.paths };
+      }
+    }
   };
 
   private handleOperationContent = (payload: ValuePath, tree: OperationContent): ValuePath | undefined => {
@@ -498,6 +511,13 @@ export class Handler<T extends unknown = unknown> {
           case 'wildcard': {
             const result = this.handleWildcard(payload);
             return this.concatIndefiniteValuePaths(result, tree.next);
+          }
+          case 'function': {
+            const result = this.handleFunction(payload, treeValue.value);
+            if (isUndefined(result)) {
+              return;
+            }
+            return this.handleSubscript(result, tree.next);
           }
         }
       }
