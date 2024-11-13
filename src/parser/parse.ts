@@ -52,6 +52,10 @@ const customErrorListener = {
   },
 };
 
+function isValidEventTrigger(tree: Root) {
+
+}
+
 export function parseInternal(input: string): Root {
   const inputStream = new antlr4.InputStream(input);
   const lexer = new JSONPathLexer(inputStream);

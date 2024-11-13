@@ -48,7 +48,7 @@ describe('query', () => {
 
     testCases.forEach(({ payload, path, expected }) => {
       it(path, () => {
-        const res = query(payload, path);
+        const res = query(payload, path, 'EventTrigger');
 
         expect(res).to.deep.equal(expected);
       });
@@ -117,7 +117,7 @@ describe('query', () => {
 
       testCases.forEach(({ payload, path, expected }) => {
         it(path, () => {
-          const res = query(payload, path);
+          const res = query(payload, path, 'EventTrigger');
 
           expect(res).to.deep.equal(expected);
         });
@@ -165,7 +165,7 @@ describe('query', () => {
 
       testCases.forEach(({ payload, path, expected }) => {
         it(path, () => {
-          const res = query(payload, path);
+          const res = query(payload, path, 'EventTrigger');
 
           expect(res).to.deep.equal(expected);
         });
@@ -241,7 +241,7 @@ describe('query', () => {
 
       testCases.forEach(({ payload, path, expected }) => {
         it(path, () => {
-          const res = query(payload, path);
+          const res = query(payload, path, 'EventTrigger');
 
           expect(res).to.deep.equal(expected);
         });
@@ -271,7 +271,7 @@ describe('query', () => {
 
     testCases.forEach(({ payload, path, expected }) => {
       it(path, () => {
-        const res = query(payload, path);
+        const res = query(payload, path, 'EventTrigger');
 
         expect(res).to.deep.equal(expected);
       });
@@ -305,7 +305,7 @@ describe('query', () => {
 
     testCases.forEach(({ payload, path, expected }) => {
       it(path, () => {
-        const res = query(payload, path);
+        const res = query(payload, path, 'EventTrigger');
 
         expect(res).to.deep.equal(expected);
       });
@@ -337,7 +337,7 @@ describe('query', () => {
 
     testCases.forEach(({ payload, path, expected }) => {
       it(path, () => {
-        const res = query(payload, path);
+        const res = query(payload, path, 'EventTrigger');
 
         expect(res).to.deep.equal(expected);
       });
@@ -499,7 +499,7 @@ describe('query', () => {
 
     testCases.forEach(({ path, expected }) => {
       it(path, () => {
-        const res = query(PAYLOAD, path);
+        const res = query(PAYLOAD, path, 'EventTrigger');
 
         expect(res).to.deep.equal(expected);
       });
@@ -568,14 +568,14 @@ describe('query', () => {
     ];
 
     testCases.forEach(({ path, expected }) => {
-      const res = query(PAYLOAD, path);
+      const res = query(PAYLOAD, path, 'EventTrigger');
 
       expect(res).to.deep.equal(expected);
     });
 
     it('should throw exception on missing operator', () => {
       expect(() => {
-        query(PAYLOAD, '$.arraySimpleObjects[?(@.number>3 4)]..number');
+        query(PAYLOAD, '$.arraySimpleObjects[?(@.number>3 4)]..number', 'EventTrigger');
       }).to.throw(Error);
     });
   });
@@ -597,7 +597,7 @@ describe('query', () => {
 
     testCases.forEach(({ path, err }) => {
       expect(() => {
-        query({ test: 1 }, path);
+        query({ test: 1 }, path, 'EventTrigger');
       }).to.throw(err);
     });
   });
@@ -641,7 +641,7 @@ describe('query', () => {
 
     testCases.forEach(({ path, expected }) => {
       it(path, () => {
-        const res = query(PAYLOAD, path);
+        const res = query(PAYLOAD, path, 'EventTrigger');
 
         expect(res).to.deep.equal(expected);
       });
@@ -676,7 +676,7 @@ describe('query', () => {
 
     testCases.forEach(({ path, expected }) => {
       it(path, () => {
-        const res = query(PAYLOAD, path, { returnArray: true });
+        const res = query(PAYLOAD, path, 'EventTrigger', { returnArray: true });
 
         expect(res).to.deep.equal(expected);
       });
@@ -695,7 +695,7 @@ describe('query', () => {
 
     testCases.forEach(({ payload, path, expected }) => {
       it(path, () => {
-        const res = query(payload, path);
+        const res = query(payload, path, 'EventTrigger');
 
         expect(res).to.deep.equal(expected);
       });
@@ -725,7 +725,7 @@ describe('query', () => {
 
     testCases.forEach(({ path, expected, options }) => {
       it(path, () => {
-        const res = query({ test: 1 }, path, options);
+        const res = query({ test: 1 }, path, 'EventTrigger', options);
 
         expect(res).to.deep.equal(expected);
       });
@@ -752,7 +752,7 @@ describe('query with functions', () => {
   ];
   testCases.forEach(({ payload, path, expected }) => {
     it(path, () => {
-      const res = query(payload, path);
+      const res = query(payload, path, 'EventTrigger');
 
       expect(res).to.deep.equal(expected);
     });

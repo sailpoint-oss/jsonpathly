@@ -77,9 +77,6 @@ export function stringify(input: JsonPathElement | null): string {
       return '!(' + stringify(input.value) + ')';
     }
     case 'function': {
-      if (input.operator === 'append') {
-        return `${input.operator}(${stringify(input.value)})`;
-      }
       if (input.operator === 'concat') {
         return `${input.operator}(${stringify(input.value)})`;
       }

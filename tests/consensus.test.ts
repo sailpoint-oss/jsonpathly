@@ -1,7 +1,7 @@
 import { query } from '../src/handler/query';
 import { expect } from 'chai';
 
-const testSuits = [
+const eventTriggerTestSuits = [
   {
     title: 'array_slice_on_exact_match',
     query: '$[0:5]',
@@ -2654,18 +2654,56 @@ const testSuits = [
     results: [5, 2],
     consensus: true,
   },
+  {
+    title: 'length_is_supported',
+    query: '$.a.length()',
+    payload: {
+      a: [1, 2, 3]
+    },
+    results: [3],
+    consensus: true,
+  },
 ];
 
-describe('test_suits', () => {
-  testSuits.forEach(({ title, query: q, payload, results }) => {
+const workflowsTestSuits = [
+  {
+    title: 'length_not_supported',
+    query: '$.a.length()',
+    payload: {
+      a: [1, 2, 3]
+    },
+    results: 'NOT_SUPPORTED',
+    consensus: false,
+  },
+]
+
+describe('event_trigger_test_suits', () => {
+  eventTriggerTestSuits.forEach(({ title, query: q, payload, results }) => {
     it(title, (done) => {
       if (results === 'NOT_SUPPORTED') {
         expect(() => {
-          return query(payload, q, { returnArray: true });
+          return query(payload, q, 'EventTrigger', { returnArray: true });
         }).to.throw(Error);
         done();
       } else {
-        const res = query(payload, q, { returnArray: true });
+        const res = query(payload, q, 'EventTrigger', { returnArray: true });
+        expect(res).to.deep.equal(results);
+        done();
+      }
+    });
+  });
+});
+
+describe('workflows_test_suits', () => {
+  workflowsTestSuits.forEach(({ title, query: q, payload, results }) => {
+    it(title, (done) => {
+      if (results === 'NOT_SUPPORTED') {
+        expect(() => {
+          return query(payload, q, 'Workflows', { returnArray: true });
+        }).to.throw(Error);
+        done();
+      } else {
+        const res = query(payload, q, 'Workflows', { returnArray: true });
         expect(res).to.deep.equal(results);
         done();
       }
