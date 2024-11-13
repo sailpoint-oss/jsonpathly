@@ -11,7 +11,6 @@ import {
   NumericLiteral,
   OperationContent,
   PathFunction,
-  PathFunctionContent,
   Root,
   Slices,
   StringLiteral,

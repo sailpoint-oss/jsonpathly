@@ -7,9 +7,14 @@ export type QueryOptions = {
   returnArray?: boolean;
 };
 
-const querySingle = (payload: unknown, path: string, options: QueryOptions): unknown => {
+const querySingle = (payload: unknown, path: string, parserType: string, options: QueryOptions): unknown => {
   const tree = parseInternal(path);
-
+  const treeString = JSON.stringify(tree);
+  if (parserType === 'Workflows') {
+    if (treeString.includes('"operator":"length"')) {
+      throw new Error("Workflows JSONpath does not support length()");
+    }
+  }
   const handler = new Handler(payload);
   const result = handler.handleRoot(tree);
 
@@ -23,10 +28,10 @@ const querySingle = (payload: unknown, path: string, options: QueryOptions): unk
   return result?.value;
 };
 
-const queryMany = (payload: unknown, paths: string[], options: QueryOptions): unknown => {
+const queryMany = (payload: unknown, paths: string[], parserType: string, options: QueryOptions): unknown => {
   const results: unknown[] = [];
   for (const path of paths) {
-    const res = querySingle(payload, path, options);
+    const res = querySingle(payload, path, parserType, options);
     if (isDefined(res)) {
       results.push(res);
     }
@@ -34,12 +39,12 @@ const queryMany = (payload: unknown, paths: string[], options: QueryOptions): un
   return results;
 };
 
-export const query = (payload: unknown, paths: string | string[], options: QueryOptions = {}): unknown => {
+export const query = (payload: unknown, paths: string | string[], parserType: string, options: QueryOptions = {}): unknown => {
   try {
     if (isArray(paths)) {
-      return queryMany(payload, paths, options);
+      return queryMany(payload, paths, parserType, options);
     }
-    return querySingle(payload, paths, options);
+    return querySingle(payload, paths, parserType, options);
   } catch (e) {
     if (!options.hideExceptions) {
       throw e;

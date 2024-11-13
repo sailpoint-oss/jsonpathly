@@ -75,9 +75,9 @@ describe('paths', () => {
 
   testCases.forEach(({ payload, path }) => {
     it(path, () => {
-      const res1 = query(payload, path, { returnArray: true });
-      const res2 = paths(payload, path);
-      const res3 = query(payload, res2 as string[]);
+      const res1 = query(payload, path, 'EventTrigger', { returnArray: true });
+      const res2 = paths(payload, path, 'EventTrigger');
+      const res3 = query(payload, res2 as string[], 'EventTrigger');
 
       expect(res1).to.deep.equal(res3);
     });
@@ -101,7 +101,7 @@ describe('paths', () => {
 
     testCases.forEach(({ payload, path, expected, opts }) => {
       it(path, () => {
-        const res = paths(payload, path, opts as PathsOptions);
+        const res = paths(payload, path, 'EventTrigger', opts as PathsOptions);
 
         expect(res).to.deep.equal(expected);
       });
@@ -109,7 +109,7 @@ describe('paths', () => {
 
     it('should throw exception', () => {
       expect(() => {
-        paths({}, 'bad');
+        paths({}, 'bad', 'EventTrigger');
       }).to.throw(Error);
     });
   });

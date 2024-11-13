@@ -89,14 +89,18 @@ The following table lists different operators and their descriptions:
 
 ## Methods
 
-#### jp.query(obj, pathExpression[, options])
+#### jp.query(obj, pathExpression, parserType[, options])
 
-Used to find elements in the obj data that match the given pathExpression. The function returns an array of elements that match the expression or an empty array if none are found.
+Used to find elements in the obj data that match the given pathExpression.
+
+SailPoint has two different implementation of JSONpath for their Event Trigger Service and their Workflows engine. The `parserType` controls which parser to use: `EventTrigger` or `Workflows`. 
+
+The function returns an array of elements that match the expression or an empty array if none are found.
 
 ```javascript
 import jp from "jsonpathly";
 
-const players = jp.query(data, "$..players");
+const players = jp.query(data, "$..players", "EventTrigger");
 // [ 'Nigel Short', 'Garry Kasparov', 'Vladimir Kramnik', 'Magnus Carlsen' ]
 ```
 
@@ -107,10 +111,14 @@ const players = jp.query(data, "$..players");
 
 #### jp.paths(obj, pathExpression[, options])
 
-Get the paths to elements in obj that match pathExpression. The result is a list of paths to elements that fulfill the specified JSONPath expression.
+Get the paths to elements in obj that match pathExpression. 
+
+SailPoint has two different implementation of JSONpath for their Event Trigger Service and their Workflows engine. The `parserType` controls which parser to use: `EventTrigger` or `Workflows`. 
+
+The result is a list of paths to elements that fulfill the specified JSONPath expression.
 
 ```javascript
-const paths = jp.paths(data, "$..author");
+const paths = jp.paths(data, "$..author", "EventTrigger");
 // [
 //   '$["store"]["book"][0]["author"]',
 //   '$["store"]["book"][1]["author"]',

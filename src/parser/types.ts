@@ -150,16 +150,11 @@ export type PathFunctionContent = Value | Current | Root;
 export type PathFunction =
   | {
       type: 'function';
-      operator: 'min' | 'max' | 'avg' | 'stddev' | 'length' | 'sum' | 'keys';
+      operator: 'length';
     }
   | {
       type: 'function';
       operator: 'concat';
-      value: PathFunctionContent;
-    }
-  | {
-      type: 'function';
-      operator: 'append';
       value: PathFunctionContent;
     };
 
