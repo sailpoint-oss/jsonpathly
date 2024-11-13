@@ -2665,12 +2665,64 @@ const eventTriggerTestSuits = [
   },
 ];
 
+// { value: '"operator":"in"', error: "in"},
+//     { value: '"operator":"nin"', error: "nin"},
+//     { value: '"operator":"subsetof"', error: "subsetof"},
+//     { value: '"operator":"anyof"', error: "anyof"},
+//     { value: '"operator":"noneof"', error: "noneof"},
+//     { value: '"operator":"size"', error: "size"},
+
 const workflowsTestSuits = [
   {
-    title: 'length_not_supported',
-    query: '$.a.length()',
+    title: 'in_not_supported',
+    query: '$.a(?(@.attribute in ["department"]))',
     payload: {
-      a: [1, 2, 3]
+      a: [{"attribute":"department"}]
+    },
+    results: 'NOT_SUPPORTED',
+    consensus: false,
+  },
+  {
+    title: 'nin_not_supported',
+    query: '$.a(?(@.attribute nin ["department"]))',
+    payload: {
+      a: [{"attribute":"department"}]
+    },
+    results: 'NOT_SUPPORTED',
+    consensus: false,
+  },
+  {
+    title: 'subsetof_not_supported',
+    query: '$[?($.a subsetof ["department"]))',
+    payload: {
+      a: ["attribute","department"]
+    },
+    results: 'NOT_SUPPORTED',
+    consensus: false,
+  },
+  {
+    title: 'anyof_not_supported',
+    query: '$[?($.a anyof ["department"]))',
+    payload: {
+      a: ["attribute","department"]
+    },
+    results: 'NOT_SUPPORTED',
+    consensus: false,
+  },
+  {
+    title: 'noneof_not_supported',
+    query: '$[?($.a anyof ["department"]))',
+    payload: {
+      a: ["attribute","department"]
+    },
+    results: 'NOT_SUPPORTED',
+    consensus: false,
+  },
+  {
+    title: 'size_not_supported',
+    query: '$[?($.a size 2))',
+    payload: {
+      a: ["attribute","department"]
     },
     results: 'NOT_SUPPORTED',
     consensus: false,
