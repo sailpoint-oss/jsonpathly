@@ -18,9 +18,9 @@ const querySingle = (payload: unknown, path: string, parserType: string, options
   } else {
     throw new Error(`Invalid parserType: ${parserType}`);
   }
-  
-  const handler = new Handler(payload);
-  const result = handler.handleRoot(tree);
+
+  const handler = new Handler(payload, parserType);
+  const result = handler.handleRoot(tree, parserType);
 
   if (!result?.isIndefinite && options.returnArray) {
     if (isUndefined(result)) {

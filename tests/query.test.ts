@@ -742,7 +742,7 @@ describe('query with functions', () => {
     empty: [],
     object: { test1: 1, test2: 2, test3: 3 },
   };
-  const testCases = [
+  const eventTriggerTestCases = [
     { payload: PAYLOAD, path: `$.numbers.length()`, expected: 8 },
     { payload: PAYLOAD, path: `$[?($.numbers.length() >= 4)]`, expected: [PAYLOAD] },
     { payload: PAYLOAD, path: `$.strings.length()`, expected: 3 },
@@ -750,14 +750,24 @@ describe('query with functions', () => {
     { payload: PAYLOAD, path: `$.number.length()`, expected: undefined },
     { payload: PAYLOAD, path: `$.string.length()`, expected: undefined },
   ];
-  testCases.forEach(({ payload, path, expected }) => {
-    it(`Workflows: ${path}`, () => {
-      const res = query(payload, path, 'Workflows');
+  const workflowsTestCases = [
+    { payload: PAYLOAD, path: `$.numbers.length()`, expected: 8 },
+    { payload: PAYLOAD, path: `$[?($.numbers.length() >= 4)]`, expected: [PAYLOAD] },
+    { payload: PAYLOAD, path: `$.strings.length()`, expected: 3 },
+    { payload: PAYLOAD, path: `$.empty.length()`, expected: 0 },
+    { payload: PAYLOAD, path: `$.number.length()`, expected: undefined },
+    { payload: PAYLOAD, path: `$.string.length()`, expected: 5 },
+  ];
+  eventTriggerTestCases.forEach(({ payload, path, expected }) => {
+    it(`EventTrigger: ${path}`, () => {
+      const res = query(payload, path, 'EventTrigger');
 
       expect(res).to.deep.equal(expected);
     });
-    it(`EventTrigger: ${path}`, () => {
-      const res = query(payload, path, 'EventTrigger');
+  });
+  workflowsTestCases.forEach(({ payload, path, expected }) => {
+    it(`Workflows: ${path}`, () => {
+      const res = query(payload, path, 'Workflows');
 
       expect(res).to.deep.equal(expected);
     });
