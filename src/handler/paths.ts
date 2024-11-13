@@ -9,7 +9,7 @@ export type PathsOptions = {
 export const paths = (payload: unknown, path: string, parserType: string, options: PathsOptions = {}): string[] => {
   try {
     const tree = parseInternal(path);
-    
+
     // Throws an error if the tree contains any operations that are unsupported
     if (parserType === 'Workflows') {
       validateWorkflowsParser(tree);

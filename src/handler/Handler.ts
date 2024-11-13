@@ -31,7 +31,7 @@ export class Handler<T extends unknown = unknown> {
 
   constructor(rootPayload: T, parserType: string) {
     this.rootPayload = { value: rootPayload, paths: '$' };
-    this.parserType = parserType
+    this.parserType = parserType;
   }
 
   private handleIdentifier = (payload: ValuePath, tree: Identifier): ValuePath | undefined => {
@@ -56,7 +56,7 @@ export class Handler<T extends unknown = unknown> {
 
     return Object.keys(value).map((key) => ({ value: value[key], paths: formatStringLiteralPath(paths, key) }));
   };
-  
+
   private handleFunction = (payload: ValuePath, tree: PathFunction, parserType: string): ValuePath | undefined => {
     switch (tree.operator) {
       case 'length': {
@@ -71,7 +71,11 @@ export class Handler<T extends unknown = unknown> {
     }
   };
 
-  private handleOperationContent = (payload: ValuePath, tree: OperationContent, parserType: string): ValuePath | undefined => {
+  private handleOperationContent = (
+    payload: ValuePath,
+    tree: OperationContent,
+    parserType: string,
+  ): ValuePath | undefined => {
     switch (tree.type) {
       case 'root': {
         return this.handleSubscript(this.rootPayload, tree.next, parserType);
@@ -230,7 +234,11 @@ export class Handler<T extends unknown = unknown> {
     }
   };
 
-  private handleFilterExpressionContent = (payload: ValuePath, tree: FilterExpressionContent, parserType: string): boolean => {
+  private handleFilterExpressionContent = (
+    payload: ValuePath,
+    tree: FilterExpressionContent,
+    parserType: string,
+  ): boolean => {
     switch (tree.type) {
       case 'logicalExpression': {
         return this.handleLogicalExpression(payload, tree, parserType);
@@ -377,7 +385,11 @@ export class Handler<T extends unknown = unknown> {
       });
     } else if (isArray(value)) {
       value.forEach((item, index) => {
-        const result = this.handleDotdot({ value: item, paths: formatNumericLiteralPath(payload.paths, index) }, tree, parserType);
+        const result = this.handleDotdot(
+          { value: item, paths: formatNumericLiteralPath(payload.paths, index) },
+          tree,
+          parserType,
+        );
         results = results.concat(result);
       });
     }
@@ -399,7 +411,11 @@ export class Handler<T extends unknown = unknown> {
     }
   };
 
-  private handleBracketExpressionContent = (payload: ValuePath, tree: BracketExpressionContent, parserType: string): ValuePath[] => {
+  private handleBracketExpressionContent = (
+    payload: ValuePath,
+    tree: BracketExpressionContent,
+    parserType: string,
+  ): ValuePath[] => {
     const payloadValue = payload.value;
 
     switch (tree.type) {
@@ -436,7 +452,11 @@ export class Handler<T extends unknown = unknown> {
     }
   };
 
-  private concatIndefiniteValuePaths = (payload: ValuePath[], tree: Subscript | null, parserType: string): ValuePath => {
+  private concatIndefiniteValuePaths = (
+    payload: ValuePath[],
+    tree: Subscript | null,
+    parserType: string,
+  ): ValuePath => {
     if (!tree) {
       return payload.reduce<ValuePath<unknown[]>>(
         (acc, current) => ({

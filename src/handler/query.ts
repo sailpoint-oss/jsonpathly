@@ -43,7 +43,12 @@ const queryMany = (payload: unknown, paths: string[], parserType: string, option
   return results;
 };
 
-export const query = (payload: unknown, paths: string | string[], parserType: string, options: QueryOptions = {}): unknown => {
+export const query = (
+  payload: unknown,
+  paths: string | string[],
+  parserType: string,
+  options: QueryOptions = {},
+): unknown => {
   try {
     if (isArray(paths)) {
       return queryMany(payload, paths, parserType, options);

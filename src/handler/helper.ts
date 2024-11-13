@@ -1,16 +1,16 @@
 import * as equal from 'fast-deep-equal';
 import { Root } from '../parser/types';
 
-export function validateWorkflowsParser(tree: Root) {
+export function validateWorkflowsParser(tree: Root): void {
   const treeString = JSON.stringify(tree);
   const unsupportedStrings = [
-    { value: '"operator":"in"', error: "in"},
-    { value: '"operator":"nin"', error: "nin"},
-    { value: '"operator":"subsetof"', error: "subsetof"},
-    { value: '"operator":"anyof"', error: "anyof"},
-    { value: '"operator":"noneof"', error: "noneof"},
-    { value: '"operator":"size"', error: "size"},
-  ]
+    { value: '"operator":"in"', error: 'in' },
+    { value: '"operator":"nin"', error: 'nin' },
+    { value: '"operator":"subsetof"', error: 'subsetof' },
+    { value: '"operator":"anyof"', error: 'anyof' },
+    { value: '"operator":"noneof"', error: 'noneof' },
+    { value: '"operator":"size"', error: 'size' },
+  ];
 
   for (const unsupportedString of unsupportedStrings) {
     if (treeString.includes(unsupportedString.value)) {

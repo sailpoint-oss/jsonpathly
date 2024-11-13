@@ -50,19 +50,7 @@ export type Slices = {
 export type Comparator =
   | {
       type: 'comparator';
-      operator:
-        | 'eq'
-        | 'ne'
-        | 'lt'
-        | 'le'
-        | 'gt'
-        | 'ge'
-        | 'in'
-        | 'nin'
-        | 'subsetof'
-        | 'anyof'
-        | 'noneof'
-        | 'size'
+      operator: 'eq' | 'ne' | 'lt' | 'le' | 'gt' | 'ge' | 'in' | 'nin' | 'subsetof' | 'anyof' | 'noneof' | 'size';
       left: OperationContent;
       right: OperationContent;
     }
