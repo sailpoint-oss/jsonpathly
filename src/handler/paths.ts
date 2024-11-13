@@ -19,8 +19,8 @@ export const paths = (payload: unknown, path: string, parserType: string, option
       throw new Error(`Invalid parserType: ${parserType}`);
     }
 
-    const handler = new Handler(payload);
-    const result = handler.handleRoot(tree);
+    const handler = new Handler(payload, parserType);
+    const result = handler.handleRoot(tree, parserType);
 
     if (isUndefined(result)) {
       return [];

@@ -27,9 +27,11 @@ type ValuePath<T extends unknown = unknown> = { value: T; paths: string | string
 
 export class Handler<T extends unknown = unknown> {
   rootPayload: ValuePath<T>;
+  parserType: string;
 
-  constructor(rootPayload: T) {
+  constructor(rootPayload: T, parserType: string) {
     this.rootPayload = { value: rootPayload, paths: '$' };
+    this.parserType = parserType
   }
 
   private handleIdentifier = (payload: ValuePath, tree: Identifier): ValuePath | undefined => {
@@ -55,34 +57,37 @@ export class Handler<T extends unknown = unknown> {
     return Object.keys(value).map((key) => ({ value: value[key], paths: formatStringLiteralPath(paths, key) }));
   };
   
-  private handleFunction = (payload: ValuePath, tree: PathFunction): ValuePath | undefined => {
+  private handleFunction = (payload: ValuePath, tree: PathFunction, parserType: string): ValuePath | undefined => {
     switch (tree.operator) {
       case 'length': {
-        if (!isArray(payload.value)) {
+        if (parserType === 'Workflows' && (isArray(payload.value) || isString(payload.value))) {
+          return { value: payload.value.length, paths: payload.paths };
+        } else if (parserType === 'EventTrigger' && isArray(payload.value)) {
+          return { value: payload.value.length, paths: payload.paths };
+        } else {
           return;
         }
-        return { value: payload.value.length, paths: payload.paths };
       }
     }
   };
 
-  private handleOperationContent = (payload: ValuePath, tree: OperationContent): ValuePath | undefined => {
+  private handleOperationContent = (payload: ValuePath, tree: OperationContent, parserType: string): ValuePath | undefined => {
     switch (tree.type) {
       case 'root': {
-        return this.handleSubscript(this.rootPayload, tree.next);
+        return this.handleSubscript(this.rootPayload, tree.next, parserType);
       }
       case 'current': {
-        return this.handleSubscript(payload, tree.next);
+        return this.handleSubscript(payload, tree.next, parserType);
       }
       case 'value': {
         return { value: tree.value, paths: payload.paths };
       }
       case 'groupOperation': {
-        return this.handleOperationContent(payload, tree.value);
+        return this.handleOperationContent(payload, tree.value, parserType);
       }
       case 'operation': {
-        const left = this.handleOperationContent(payload, tree.left)?.value;
-        const right = this.handleOperationContent(payload, tree.right)?.value;
+        const left = this.handleOperationContent(payload, tree.left, parserType)?.value;
+        const right = this.handleOperationContent(payload, tree.right, parserType)?.value;
 
         if (!isNumber(left) || !isNumber(right)) {
           return;
@@ -115,9 +120,9 @@ export class Handler<T extends unknown = unknown> {
     }
   };
 
-  private handleComparator = (payload: ValuePath, tree: Comparator): boolean => {
-    const leftValue = this.handleOperationContent(payload, tree.left)?.value;
-    const rightValue = this.handleOperationContent(payload, tree.right)?.value;
+  private handleComparator = (payload: ValuePath, tree: Comparator, parserType: string): boolean => {
+    const leftValue = this.handleOperationContent(payload, tree.left, parserType)?.value;
+    const rightValue = this.handleOperationContent(payload, tree.right, parserType)?.value;
 
     switch (tree.operator) {
       case 'subsetof': {
@@ -211,9 +216,9 @@ export class Handler<T extends unknown = unknown> {
     }
   };
 
-  private handleLogicalExpression = (payload: ValuePath, tree: LogicalExpression): boolean => {
-    const leftValue = this.handleFilterExpressionContent(payload, tree.left);
-    const rightValue = this.handleFilterExpressionContent(payload, tree.right);
+  private handleLogicalExpression = (payload: ValuePath, tree: LogicalExpression, parserType: string): boolean => {
+    const leftValue = this.handleFilterExpressionContent(payload, tree.left, parserType);
+    const rightValue = this.handleFilterExpressionContent(payload, tree.right, parserType);
 
     switch (tree.operator) {
       case 'and': {
@@ -225,25 +230,25 @@ export class Handler<T extends unknown = unknown> {
     }
   };
 
-  private handleFilterExpressionContent = (payload: ValuePath, tree: FilterExpressionContent): boolean => {
+  private handleFilterExpressionContent = (payload: ValuePath, tree: FilterExpressionContent, parserType: string): boolean => {
     switch (tree.type) {
       case 'logicalExpression': {
-        return this.handleLogicalExpression(payload, tree);
+        return this.handleLogicalExpression(payload, tree, parserType);
       }
       case 'comparator': {
-        return this.handleComparator(payload, tree);
+        return this.handleComparator(payload, tree, parserType);
       }
       case 'groupExpression': {
-        return this.handleFilterExpressionContent(payload, tree.value);
+        return this.handleFilterExpressionContent(payload, tree.value, parserType);
       }
       case 'notExpression': {
-        return !this.handleFilterExpressionContent(payload, tree.value);
+        return !this.handleFilterExpressionContent(payload, tree.value, parserType);
       }
       case 'root': {
-        return isDefined(this.handleSubscript(this.rootPayload, tree.next));
+        return isDefined(this.handleSubscript(this.rootPayload, tree.next, parserType));
       }
       case 'current': {
-        return isDefined(this.handleSubscript(payload, tree.next));
+        return isDefined(this.handleSubscript(payload, tree.next, parserType));
       }
       case 'value': {
         return !!tree.value;
@@ -327,7 +332,7 @@ export class Handler<T extends unknown = unknown> {
     return tree.values.map((item) => this.handleNumericLiteral({ value, paths }, item)).filter(isDefined);
   };
 
-  private handleDotdot = (payload: ValuePath, tree: DotDot): ValuePath[] => {
+  private handleDotdot = (payload: ValuePath, tree: DotDot, parserType: string): ValuePath[] => {
     const treeValue = tree.value;
     const value = payload.value;
     let results: ValuePath[] = [];
@@ -342,7 +347,7 @@ export class Handler<T extends unknown = unknown> {
       }
       case 'bracketExpression': {
         if (isPlainObject(value) || (isArray(value) && treeValue.value.type === 'wildcard')) {
-          const result = this.handleBracketExpressionContent(payload, treeValue.value);
+          const result = this.handleBracketExpressionContent(payload, treeValue.value, parserType);
           results = results.concat(result);
         }
         break;
@@ -366,12 +371,13 @@ export class Handler<T extends unknown = unknown> {
         const result = this.handleDotdot(
           { value: value[key], paths: formatStringLiteralPath(payload.paths, key) },
           tree,
+          parserType,
         );
         results = results.concat(result);
       });
     } else if (isArray(value)) {
       value.forEach((item, index) => {
-        const result = this.handleDotdot({ value: item, paths: formatNumericLiteralPath(payload.paths, index) }, tree);
+        const result = this.handleDotdot({ value: item, paths: formatNumericLiteralPath(payload.paths, index) }, tree, parserType);
         results = results.concat(result);
       });
     }
@@ -393,7 +399,7 @@ export class Handler<T extends unknown = unknown> {
     }
   };
 
-  private handleBracketExpressionContent = (payload: ValuePath, tree: BracketExpressionContent): ValuePath[] => {
+  private handleBracketExpressionContent = (payload: ValuePath, tree: BracketExpressionContent, parserType: string): ValuePath[] => {
     const payloadValue = payload.value;
 
     switch (tree.type) {
@@ -403,12 +409,12 @@ export class Handler<T extends unknown = unknown> {
         if (isArray(payloadValue)) {
           payloadValue.forEach((value, index) => {
             const item = { value, paths: formatNumericLiteralPath(payload.paths, index) };
-            if (this.handleFilterExpressionContent(item, tree.value)) {
+            if (this.handleFilterExpressionContent(item, tree.value, parserType)) {
               results = results.concat(item);
             }
           });
         } else if (isPlainObject(payloadValue)) {
-          if (this.handleFilterExpressionContent(payload, tree.value)) {
+          if (this.handleFilterExpressionContent(payload, tree.value, parserType)) {
             results = results.concat(payload);
           }
         }
@@ -430,7 +436,7 @@ export class Handler<T extends unknown = unknown> {
     }
   };
 
-  private concatIndefiniteValuePaths = (payload: ValuePath[], tree: Subscript | null): ValuePath => {
+  private concatIndefiniteValuePaths = (payload: ValuePath[], tree: Subscript | null, parserType: string): ValuePath => {
     if (!tree) {
       return payload.reduce<ValuePath<unknown[]>>(
         (acc, current) => ({
@@ -446,7 +452,7 @@ export class Handler<T extends unknown = unknown> {
     let paths: string[] = [];
 
     payload.forEach((item) => {
-      const result = this.handleSubscript(item, tree);
+      const result = this.handleSubscript(item, tree, parserType);
 
       if (isUndefined(result)) {
         return;
@@ -459,7 +465,7 @@ export class Handler<T extends unknown = unknown> {
     return { value: values, paths, isIndefinite: true };
   };
 
-  private handleSubscript = (payload: ValuePath, tree: Subscript | null): ValuePath | undefined => {
+  private handleSubscript = (payload: ValuePath, tree: Subscript | null, parserType: string): ValuePath | undefined => {
     if (tree === null) {
       return payload;
     }
@@ -467,15 +473,15 @@ export class Handler<T extends unknown = unknown> {
     const treeValue = tree.value;
     switch (treeValue.type) {
       case 'bracketExpression': {
-        const result = this.handleBracketExpressionContent(payload, treeValue.value);
-        return this.concatIndefiniteValuePaths(result, tree.next);
+        const result = this.handleBracketExpressionContent(payload, treeValue.value, parserType);
+        return this.concatIndefiniteValuePaths(result, tree.next, parserType);
       }
       case 'bracketMember': {
         const result = this.handleBracketMemberContent(payload, treeValue.value);
         if (isUndefined(result)) {
           return;
         }
-        return this.handleSubscript(result, tree.next);
+        return this.handleSubscript(result, tree.next, parserType);
       }
       case 'dot': {
         switch (treeValue.value.type) {
@@ -484,36 +490,36 @@ export class Handler<T extends unknown = unknown> {
             if (isUndefined(result)) {
               return;
             }
-            return this.handleSubscript(result, tree.next);
+            return this.handleSubscript(result, tree.next, parserType);
           }
           case 'numericLiteral': {
             const result = this.handleNumericLiteral(payload, treeValue.value);
             if (isUndefined(result)) {
               return;
             }
-            return this.handleSubscript(result, tree.next);
+            return this.handleSubscript(result, tree.next, parserType);
           }
           case 'wildcard': {
             const result = this.handleWildcard(payload);
-            return this.concatIndefiniteValuePaths(result, tree.next);
+            return this.concatIndefiniteValuePaths(result, tree.next, parserType);
           }
           case 'function': {
-            const result = this.handleFunction(payload, treeValue.value);
+            const result = this.handleFunction(payload, treeValue.value, parserType);
             if (isUndefined(result)) {
               return;
             }
-            return this.handleSubscript(result, tree.next);
+            return this.handleSubscript(result, tree.next, parserType);
           }
         }
       }
       case 'dotdot': {
-        const result = this.handleDotdot(payload, treeValue);
-        return this.concatIndefiniteValuePaths(result, tree.next);
+        const result = this.handleDotdot(payload, treeValue, parserType);
+        return this.concatIndefiniteValuePaths(result, tree.next, parserType);
       }
     }
   };
 
-  public handleRoot = (tree: Root): ValuePath | undefined => {
-    return this.handleSubscript(this.rootPayload, tree.next);
+  public handleRoot = (tree: Root, parserType: string): ValuePath | undefined => {
+    return this.handleSubscript(this.rootPayload, tree.next, parserType);
   };
 }
