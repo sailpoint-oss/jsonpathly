@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/atamano/jsonpathly.git"
+    "url": "https://github.com/sailpoint-oss/jsonpathly.git"
   },
   "keywords": [
     "jsonpath",
@@ -33,9 +33,9 @@
   "author": "Antoine Tamano",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/atamano/jsonpathly/issues"
+    "url": "https://github.com/sailpoint-oss/jsonpathly/issues"
   },
-  "homepage": "https://github.com/atamano/jsonpathly#readme",
+  "homepage": "https://github.com/sailpoint-oss/jsonpathly#readme",
   "devDependencies": {
     "@types/antlr4": "^4.11.3",
     "@types/chai": "^4.3.6",
