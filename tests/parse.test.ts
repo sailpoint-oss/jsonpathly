@@ -25,6 +25,8 @@ describe('parse', () => {
     [`$..phoneNumbers[?(@.price < 30 && !(@.type == "iPhone" && @.number))]`, ''],
     [`$.book[test, toto]`, ''],
     [`$.book["test", "toto"]`, ''],
+    [`$..book.length()`, ''],
+    [`$.store.book[?(@.price.length() < 10)]`, ''],
     [`$.store.book[?(@.price < 10)]`, ''],
     [`$.store.book[?(@.price < 8 + 2)]`, ''],
     [`$.store.book[?(@.price < 8 * 2)]`, ''],
