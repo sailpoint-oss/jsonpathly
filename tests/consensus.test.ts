@@ -2665,14 +2665,16 @@ const eventTriggerTestSuits = [
   },
 ];
 
-// { value: '"operator":"in"', error: "in"},
-//     { value: '"operator":"nin"', error: "nin"},
-//     { value: '"operator":"subsetof"', error: "subsetof"},
-//     { value: '"operator":"anyof"', error: "anyof"},
-//     { value: '"operator":"noneof"', error: "noneof"},
-//     { value: '"operator":"size"', error: "size"},
-
 const workflowsTestSuits = [
+  {
+    title: 'length_is_supported',
+    query: '$.a.length()',
+    payload: {
+      a: [1, 2, 3]
+    },
+    results: [3],
+    consensus: true,
+  },
   {
     title: 'in_not_supported',
     query: '$.a(?(@.attribute in ["department"]))',
