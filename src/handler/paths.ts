@@ -1,6 +1,6 @@
 import { parseInternal } from '../parser/parse';
 import { Handler } from './Handler';
-import { isArray, isUndefined } from './helper';
+import { isArray, isUndefined, validateWorkflowsParser } from './helper';
 
 export type PathsOptions = {
   hideExceptions?: boolean;
@@ -9,11 +9,14 @@ export type PathsOptions = {
 export const paths = (payload: unknown, path: string, parserType: string, options: PathsOptions = {}): string[] => {
   try {
     const tree = parseInternal(path);
-    const treeString = JSON.stringify(tree);
+    
+    // Throws an error if the tree contains any operations that are unsupported
     if (parserType === 'Workflows') {
-      if (treeString.includes('"operator":"length"')) {
-        throw new Error("Workflows JSONpath does not support length()");
-      }
+      validateWorkflowsParser(tree);
+    } else if (parserType === 'EventTrigger') {
+      // Not implemented yet
+    } else {
+      throw new Error(`Invalid parserType: ${parserType}`);
     }
 
     const handler = new Handler(payload);

@@ -751,7 +751,12 @@ describe('query with functions', () => {
     { payload: PAYLOAD, path: `$.string.length()`, expected: undefined },
   ];
   testCases.forEach(({ payload, path, expected }) => {
-    it(path, () => {
+    it(`Workflows: ${path}`, () => {
+      const res = query(payload, path, 'Workflows');
+
+      expect(res).to.deep.equal(expected);
+    });
+    it(`EventTrigger: ${path}`, () => {
       const res = query(payload, path, 'EventTrigger');
 
       expect(res).to.deep.equal(expected);
