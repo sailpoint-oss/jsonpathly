@@ -186,3 +186,13 @@ You will need Java installed on your machine as well. If you install Java using 
 #### Implementation
 
 For an overview of jsonpathly implementations and to compare its differences with other libraries, you can visit https://cburgmer.github.io/json-path-comparison
+
+# Contributing
+
+Please fork and submit a pull request to incorporate your changes. The `package.json` version must be updated accordingly, and a new tag based on the `package.json` version must also be pushed using the following commands:
+
+```shell
+git tag v{version}
+
+git push origin --tags
+```
