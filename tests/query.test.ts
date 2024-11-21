@@ -756,7 +756,7 @@ describe('query with functions', () => {
     { payload: PAYLOAD, path: `$.strings.length()`, expected: 3 },
     { payload: PAYLOAD, path: `$.empty.length()`, expected: 0 },
     { payload: PAYLOAD, path: `$.number.length()`, expected: undefined },
-    { payload: PAYLOAD, path: `$.string.length()`, expected: 5 },
+    { payload: PAYLOAD, path: `$.string.length()`, expected: 7 },
   ];
   eventTriggerTestCases.forEach(({ payload, path, expected }) => {
     it(`EventTrigger: ${path}`, () => {

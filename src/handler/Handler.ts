@@ -60,8 +60,11 @@ export class Handler<T extends unknown = unknown> {
   private handleFunction = (payload: ValuePath, tree: PathFunction, parserType: string): ValuePath | undefined => {
     switch (tree.operator) {
       case 'length': {
-        if (parserType === 'Workflows' && (isArray(payload.value) || isString(payload.value))) {
+        if (parserType === 'Workflows' && isArray(payload.value)) {
           return { value: payload.value.length, paths: payload.paths };
+        } else if (parserType === 'Workflows' && isString(payload.value)) {
+          // Go slice library converts a string to an array, which includes the double quotes. Thus, strings always have two more characters.
+          return { value: payload.value.length + 2, paths: payload.paths };
         } else if (parserType === 'EventTrigger' && isArray(payload.value)) {
           return { value: payload.value.length, paths: payload.paths };
         } else {
