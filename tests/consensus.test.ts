@@ -2658,7 +2658,7 @@ const eventTriggerTestSuits = [
     title: 'length_is_supported',
     query: '$.a.length()',
     payload: {
-      a: [1, 2, 3]
+      a: [1, 2, 3],
     },
     results: [3],
     consensus: true,
@@ -2670,7 +2670,7 @@ const workflowsTestSuits = [
     title: 'length_is_supported',
     query: '$.a.length()',
     payload: {
-      a: [1, 2, 3]
+      a: [1, 2, 3],
     },
     results: [3],
     consensus: true,
@@ -2679,7 +2679,7 @@ const workflowsTestSuits = [
     title: 'in_not_supported',
     query: '$.a(?(@.attribute in ["department"]))',
     payload: {
-      a: [{"attribute":"department"}]
+      a: [{ attribute: 'department' }],
     },
     results: 'NOT_SUPPORTED',
     consensus: false,
@@ -2688,7 +2688,7 @@ const workflowsTestSuits = [
     title: 'nin_not_supported',
     query: '$.a(?(@.attribute nin ["department"]))',
     payload: {
-      a: [{"attribute":"department"}]
+      a: [{ attribute: 'department' }],
     },
     results: 'NOT_SUPPORTED',
     consensus: false,
@@ -2697,7 +2697,7 @@ const workflowsTestSuits = [
     title: 'subsetof_not_supported',
     query: '$[?($.a subsetof ["department"]))',
     payload: {
-      a: ["attribute","department"]
+      a: ['attribute', 'department'],
     },
     results: 'NOT_SUPPORTED',
     consensus: false,
@@ -2706,7 +2706,7 @@ const workflowsTestSuits = [
     title: 'anyof_not_supported',
     query: '$[?($.a anyof ["department"]))',
     payload: {
-      a: ["attribute","department"]
+      a: ['attribute', 'department'],
     },
     results: 'NOT_SUPPORTED',
     consensus: false,
@@ -2715,7 +2715,7 @@ const workflowsTestSuits = [
     title: 'noneof_not_supported',
     query: '$[?($.a anyof ["department"]))',
     payload: {
-      a: ["attribute","department"]
+      a: ['attribute', 'department'],
     },
     results: 'NOT_SUPPORTED',
     consensus: false,
@@ -2724,12 +2724,72 @@ const workflowsTestSuits = [
     title: 'size_not_supported',
     query: '$[?($.a size 2))',
     payload: {
-      a: ["attribute","department"]
+      a: ['attribute', 'department'],
     },
     results: 'NOT_SUPPORTED',
     consensus: false,
   },
-]
+  {
+    title: 'select value from array',
+    query: '$.items[?(@.cost == 10)][0]',
+    payload: {
+      id: '1234',
+      name: 'fruits',
+      items: [
+        {
+          name: 'apple',
+          color: 'red',
+          tasty: true,
+          cost: 10,
+        },
+        {
+          name: 'lemon',
+          color: 'yellow',
+          tasty: false,
+          cost: 10,
+        },
+      ],
+    },
+    results: {
+      name: 'apple',
+      color: 'red',
+      tasty: true,
+      cost: 10,
+    },
+    consensus: true,
+  },
+  {
+    title: 'check true value',
+    query: '$.items[?(@.tasty)]',
+    payload: {
+      id: '1234',
+      name: 'fruits',
+      items: [
+        {
+          name: 'apple',
+          color: 'red',
+          tasty: true,
+          cost: 10,
+        },
+        {
+          name: 'lemon',
+          color: 'yellow',
+          tasty: false,
+          cost: 10,
+        },
+      ],
+    },
+    results: [
+      {
+        name: 'apple',
+        color: 'red',
+        tasty: true,
+        cost: 10,
+      },
+    ],
+    consensus: true,
+  },
+];
 
 describe('event_trigger_test_suits', () => {
   eventTriggerTestSuits.forEach(({ title, query: q, payload, results }) => {
