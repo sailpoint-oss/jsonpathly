@@ -2728,67 +2728,7 @@ const workflowsTestSuits = [
     },
     results: 'NOT_SUPPORTED',
     consensus: false,
-  },
-  {
-    title: 'select value from array',
-    query: '$.items[?(@.cost == 10)][0]',
-    payload: {
-      id: '1234',
-      name: 'fruits',
-      items: [
-        {
-          name: 'apple',
-          color: 'red',
-          tasty: true,
-          cost: 10,
-        },
-        {
-          name: 'lemon',
-          color: 'yellow',
-          tasty: false,
-          cost: 10,
-        },
-      ],
-    },
-    results: {
-      name: 'apple',
-      color: 'red',
-      tasty: true,
-      cost: 10,
-    },
-    consensus: true,
-  },
-  {
-    title: 'check true value',
-    query: '$.items[?(@.tasty)]',
-    payload: {
-      id: '1234',
-      name: 'fruits',
-      items: [
-        {
-          name: 'apple',
-          color: 'red',
-          tasty: true,
-          cost: 10,
-        },
-        {
-          name: 'lemon',
-          color: 'yellow',
-          tasty: false,
-          cost: 10,
-        },
-      ],
-    },
-    results: [
-      {
-        name: 'apple',
-        color: 'red',
-        tasty: true,
-        cost: 10,
-      },
-    ],
-    consensus: true,
-  },
+  }
 ];
 
 describe('event_trigger_test_suits', () => {

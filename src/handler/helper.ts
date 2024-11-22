@@ -49,6 +49,10 @@ export const isString = (item: unknown): item is string => {
   return typeof item === 'string';
 };
 
+export const isBoolean = (item: unknown): item is boolean => {
+  return typeof item === 'boolean';
+};
+
 export const isUndefined = <T extends unknown>(item: T | undefined): item is undefined => {
   return typeof item === 'undefined';
 };
