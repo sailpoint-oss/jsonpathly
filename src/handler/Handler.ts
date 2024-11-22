@@ -17,7 +17,7 @@ import {
   Subscript,
   Unions,
 } from '../parser/types';
-import { isArray, isDefined, isEqual, isNumber, isPlainObject, isString, isUndefined } from './helper';
+import { isArray, isBoolean, isDefined, isEqual, isNumber, isPlainObject, isString, isUndefined } from './helper';
 
 const getNumericLiteralIndex = (index: number, total: number): number => (index < 0 ? total + index : index);
 const formatStringLiteralPath = (paths: string | string[], v: string): string | string[] => paths.concat(`["${v}"]`);
@@ -259,7 +259,17 @@ export class Handler<T extends unknown = unknown> {
         return isDefined(this.handleSubscript(this.rootPayload, tree.next, parserType));
       }
       case 'current': {
-        return isDefined(this.handleSubscript(payload, tree.next, parserType));
+        const result = this.handleSubscript(payload, tree.next, parserType)
+        if (isDefined(result)) {
+          if (parserType === 'Workflows' && isBoolean(result.value)) {
+            // GoSlice library treats [?(@.item)] as [?(@.item == true)] it @.item is a boolean
+            return result.value
+          } else {
+            return true;
+          }
+        } else {
+          return false
+        }
       }
       case 'value': {
         return !!tree.value;

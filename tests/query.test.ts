@@ -733,7 +733,7 @@ describe('query', () => {
   });
 });
 
-describe('query with functions', () => {
+describe('Workflow and Event Trigger cases', () => {
   const PAYLOAD = {
     number: 123,
     string: 'hello',
@@ -741,6 +741,20 @@ describe('query with functions', () => {
     strings: ['1', '2', '3'],
     empty: [],
     object: { test1: 1, test2: 2, test3: 3 },
+    items: [
+      {
+        name: 'apple',
+        color: 'red',
+        tasty: true,
+        cost: 10,
+      },
+      {
+        name: 'lemon',
+        color: 'yellow',
+        tasty: false,
+        cost: 10,
+      },
+    ]
   };
   const eventTriggerTestCases = [
     { payload: PAYLOAD, path: `$.numbers.length()`, expected: 8 },
@@ -749,6 +763,8 @@ describe('query with functions', () => {
     { payload: PAYLOAD, path: `$.empty.length()`, expected: 0 },
     { payload: PAYLOAD, path: `$.number.length()`, expected: undefined },
     { payload: PAYLOAD, path: `$.string.length()`, expected: undefined },
+    { payload: PAYLOAD, path: `$.items[?(@.tasty)]`, expected: PAYLOAD.items},
+    { payload: PAYLOAD, path: `$.items[?(@.color)]`, expected: PAYLOAD.items}
   ];
   const workflowsTestCases = [
     { payload: PAYLOAD, path: `$.numbers.length()`, expected: 8 },
@@ -757,6 +773,8 @@ describe('query with functions', () => {
     { payload: PAYLOAD, path: `$.empty.length()`, expected: 0 },
     { payload: PAYLOAD, path: `$.number.length()`, expected: undefined },
     { payload: PAYLOAD, path: `$.string.length()`, expected: 7 },
+    { payload: PAYLOAD, path: `$.items[?(@.tasty)]`, expected: [PAYLOAD.items[0]]},
+    { payload: PAYLOAD, path: `$.items[?(@.color)]`, expected: PAYLOAD.items}
   ];
   eventTriggerTestCases.forEach(({ payload, path, expected }) => {
     it(`EventTrigger: ${path}`, () => {
